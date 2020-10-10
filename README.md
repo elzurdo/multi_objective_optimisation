@@ -9,14 +9,22 @@ Otherwise, you might want to go over the TL;DR and Motivation sections to have a
 
 ### Outline
 * Introduction to Pareto Front Optimisation (15 minutes)
-* Hands On: Pareto Front Optimisation (30 minutes)
+* Hands On: Pareto Front Optimisation (30 minutes) 
+<a href="https://colab.research.google.com/github/elzurdo/multi_objective_optimisation/blob/master/01_knapsack%202D_exhaustive.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
 * Introduction to applying Multi-Objective Optimisation to Genetic Algorithms (20 minutes)
-* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (45 minutes)
+* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (45 minutes) <a href="https://colab.research.google.com/github/elzurdo/multi_objective_optimisation/blob/master/02_knapsack_2D_stochastic.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
 * Summary and Discussion (10 minutes)
 
 ### Hands On Instructions
 
+These notebooks will help you learn to solve for multiple objective optimisation problems and visualise results.
 
+* In `01_knapsack 2D_exhaustive.ipynb` you will optimise for the knapsack problem in an exhaustive solution space. Here you will learn:
+    * about the main limitation of 1D optimisation: a reduced search space.
+    * what Pareto Fronts are and how it is used to overcome 1D limitations
+* In `02_knapsack_2D_stochastic.ipynb` you optimise for the knapsack problem in an intractable search space. Here you will learn:
+    * to compare Pareto Fronts of multiple instances 
+    * to apply Pareto techniques to Genetic Algorithms
 
 ## TL;DR
 Optimising for multiple objectives is a non-trivial task, especially when they are in conflict. For example how can one best overcome the classic trade-off between quality and cost of production, when the monetary value of quality is not defined?  In this hands-on Python tutorial you will learn about Pareto Fronts and use them to optimise for multiple objectives simultaneously.
