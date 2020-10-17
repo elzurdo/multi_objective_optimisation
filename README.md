@@ -8,11 +8,12 @@ If you have just listened to the intro video feel free to dive into the Instruct
 Otherwise, you might want to go over the TL;DR and Motivation sections to have a better understanding of what to expect from this tutorial.
 
 ### Outline
+* Welcome and Intro (5 minutes)
 * Introduction to Pareto Front Optimisation (15 minutes)
 * Hands On: Pareto Front Optimisation (30 minutes) 
 <a href="https://colab.research.google.com/github/elzurdo/multi_objective_optimisation/blob/master/01_knapsack%202D_exhaustive.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
 * Introduction to applying Multi-Objective Optimisation to Genetic Algorithms (20 minutes)
-* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (45 minutes) <a href="https://colab.research.google.com/github/elzurdo/multi_objective_optimisation/blob/master/02_knapsack_2D_stochastic.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
+* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (40 minutes) <a href="https://colab.research.google.com/github/elzurdo/multi_objective_optimisation/blob/master/02_knapsack_2D_stochastic.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
 * Summary and Discussion (10 minutes)
 
 ### Hands On Instructions
