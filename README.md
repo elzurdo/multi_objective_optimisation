@@ -3,8 +3,10 @@ This repository is dedicated to tutorials to learn and practice using Pareto Fro
 as a means for Multi-Objective Optimisation.
 
 ## PyData Global 2020
+<img src="https://global.pydata.org/assets/images/logo.png" width="300">
+
 Welcome and thanks for attending this tutorial session!    
-If you have just listened to the intro video feel free to dive into the Instructions section.  
+If you have just listened to the intro video feel free to dive into notebook via the Colab buttons in the Outline section.  
 Otherwise, you might want to go over the TL;DR and Motivation sections to have a better understanding of what to expect from this tutorial.
 
 ### Outline
@@ -37,7 +39,7 @@ The only requirements are basic usage of `numpy` and `matplotlib`. The maths req
 Here you will find Jupyter notebooks with which you will apply lessons and tools learned to the simple [Knapsack problem](https://en.wikipedia.org/wiki/Knapsack_problem). 
 You will program for filling a bag with packages with the objective of minimising the bag weight while maximising its content value. 
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Knapsack.svg">
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Knapsack.svg" width="200">
 
 
 
