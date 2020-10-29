@@ -66,4 +66,5 @@ For those interested in material before the tutorial, I kindly refer you to:
 * [DEAP](https://deap.readthedocs.io/en/master/) - a package for quick prototyping of evolutionary algorithms  
 * [Pymoo](https://pymoo.org/) - a package with multi-objective optimization algorithms 
 *  [PyData London talk](https://www.youtube.com/watch?v=_9x4cmQWZ6g) and [its slides](https://drive.google.com/file/d/1UMPGkeA_Tsc5PYWktpjquhIhOa9OD8Gb/view).  
-*  For those who want extra curriculum I highly suggest any paper on the topic by [Eckart Zitzler](https://scholar.google.ch/citations?user=GW8tPekAAAAJ&hl=de). His Ph.D thesis is an excellent read.
+*  For those who want extra curriculum I highly suggest any paper on the topic by [Eckart Zitzler](https://scholar.google.ch/citations?user=GW8tPekAAAAJ&hl=de). His Ph.D thesis is an excellent read.  
+* Pareto Front example in an [Excel workbook](http://www.vertexvortex.com/r/excel/Pareto_Frontier.xlsx) (provided by [https://www.reddit.com/r/excel/comments/104fcb/pareto_frontier/](vertexvortex from Reddit). 
