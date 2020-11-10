@@ -9,14 +9,16 @@ Welcome and thanks for attending this tutorial session!
 If you have just listened to the intro video feel free to dive into notebook via the Colab buttons in the Outline section.  
 Otherwise, you might want to go over the TL;DR and Motivation sections to have a better understanding of what to expect from this tutorial.
 
-### Outline
-* Welcome and Intro (5 minutes)
-* Introduction to Pareto Front Optimisation (15 minutes)
-* Hands On: Pareto Front Optimisation (30 minutes) 
+### Outline  
+* Welcome and Intro (5 minute [video](http://bit.ly/moo-youtube-intro))
+* Introduction to Pareto Front Optimisation (15 minutes in 2 videos: [1](http://bit.ly/moo-youtube-pareto1), [2](http://bit.ly/moo-youtube-pareto1))
+* Hands On: Pareto Front Optimisation (30 minutes in 3 videos: [1](https://bit.ly/moo-youtube-handson-pf1), [2](https://bit.ly/moo-youtube-handson-pf2), [3](https://bit.ly/moo-youtube-handson-pf3)) 
 <a href="https://bit.ly/pareto-front-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
-* Introduction to applying Multi-Objective Optimisation to Genetic Algorithms (20 minutes)
-* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (40 minutes) <a href="https://bit.ly/genetic-algorithm-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
-* Summary and Discussion (10 minutes)
+* Introduction to applying Multi-Objective Optimisation to Genetic Algorithms (20 minutes in 2 videos: [1](https://bit.ly/moo-youtube-ga1), [2](https://bit.ly/moo-youtube-ga2))
+* Hands On: applying Multi-Objective Optimisation to Genetic Algorithms (45 minutes in 5 videos [1](https://bit.ly/moo-youtube-handson-ga1), [2](https://bit.ly/moo-youtube-handson-ga2), [3](https://bit.ly/moo-youtube-handson-ga3), [4](https://bit.ly/moo-youtube-handson-ga4), [5](https://bit.ly/moo-youtube-handson-ga5)) <a href="https://bit.ly/genetic-algorithm-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
+* Summary and Discussion (5 minute [video](https://bit.ly/moo-youtube-summary))
+
+Video recording times of the hands-on sessions are shorter than the allocated time.
 
 ### Hands On Instructions
 
