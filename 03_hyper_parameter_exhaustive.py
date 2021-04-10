@@ -11,6 +11,201 @@ import pandas as pd
 import numpy as np
 
 # +
+# Visualising
+import matplotlib.pyplot as plt
+
+SMALL_SIZE = 12
+MEDIUM_SIZE = 16
+BIGGER_SIZE = 20
+
+FIG_WIDTH, FIG_HEIGHT = 8, 6
+
+plt.rc("font", size=SMALL_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=SMALL_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=MEDIUM_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=SMALL_SIZE)  # legend fontsize
+plt.rc("axes", titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+plt.rcParams["figure.figsize"] = FIG_WIDTH, FIG_HEIGHT
+plt.rcParams["hatch.linewidth"] = 0.2
+
+plt.rcParams['axes.spines.right'] = False
+plt.rcParams['axes.spines.top'] = False
+# -
+
+# # Data
+
+# +
+X_all, y_all = datasets.load_diabetes(return_X_y=True,as_frame=True)
+y_all = pd.DataFrame(y_all)
+
+col_target = "under_median"
+
+X_all.index.name = 'idx'
+y_all.index.name = 'idx'
+y_all[col_target] = (y_all['target'] <  y_all['target'].median()).astype(int)
+
+plt.hist(y_all["target"], color="purple", alpha=0.4)
+
+print(y_all["target"].describe())
+print('-' * 20)
+print(y_all[col_target].value_counts())
+
+
+
+print(X_all.shape)
+X_all.head(4)
+# -
+
+# # Vanilla ML
+
+# +
+# preprocessing
+
+test_size = 0.2
+seed = 1
+
+X_train, X_test, y_train, y_test  = train_test_split(X_all, y_all[col_target], test_size=test_size, random_state=seed)
+
+print(X_train.shape, X_test.shape)
+X_train.head(2)
+
+# +
+# classifier fit and score
+seed = 5
+model = RandomForestClassifier(n_estimators=20, random_state=seed)
+
+model.fit(X_train, y_train)
+
+accuracy_vanilla = model.score(X_test, y_test)
+accuracy_vanilla
+
+# +
+df_y_test = pd.DataFrame({'truth': y_test})
+
+df_y_test['prob_1'] = list(map(lambda x: x[1], model.predict_proba(X_test.loc[df_y_test.index])))
+
+df_y_test.head(2)
+# -
+
+bins = np.arange(0, 1, 0.05)
+df_y_test.query('truth == 0')['prob_1'].hist(bins=bins, color='red', alpha=0.7, hatch="/", label="target=0")
+df_y_test.query('truth == 1')['prob_1'].hist(bins=bins, color='green', alpha=0.7, label="target=1")
+plt.legend()
+
+# +
+thresh_values = np.arange(0.1, 1., 0.02)
+recall_vanilla = {}
+precision_vanilla = {}
+
+
+for thresh in thresh_values:
+    predictions = df_y_test['prob_1'] >= thresh
+    recall_vanilla[thresh] = recall_score(df_y_test['truth'], predictions)
+    precision_vanilla[thresh] = precision_score(df_y_test['truth'], predictions)
+    
+    
+plt.plot(recall_vanilla.values(), precision_vanilla.values(), '-o')
+plt.xlabel("recall")
+plt.ylabel("precision")
+# -
+
+# # Optimisation
+
+# ## Decision Space
+
+# +
+n_estimators = [2, 10 , 20, 30, 50, 100, 200, 300 ] #list(_n_estimators) + list(_n_estimators * 10) + list(_n_estimators * 100) + [1000, 2000, 3000]
+max_depth = [None, 3, 5, 10, 15, 20] #[None, 2, 3, 5, 7, 10, 15, 20]
+#thresh_values = np.arange(0.1, 1., 0.1) #np.arange(0.1, 1., 0.02)
+
+n_combinations = len(max_depth) * len(n_estimators) # len(thresh_values) * 
+n_combinations
+
+# +
+from itertools import product 
+
+decision_combinations = product(n_estimators, max_depth) # , thresh_values)
+
+# +
+models = {}
+for idx_model, param_values in enumerate(decision_combinations):
+    models[idx_model] = {}
+    models[idx_model]['params'] = param_values
+    
+print('This is what the first four models look like:')
+{idx_model: model for idx_model, model in models.items() if idx_model<4}
+# -
+
+print(f'The number of models {len(models):,}\nshould be the same as the combination that we previously calculated ({int(n_combinations):,})')
+
+
+# # Mapping To Objective Space
+
+# +
+def probs_to_precision_recall(truth, probs, thresh_values):
+    recall_values = {}
+    precision_values = {}
+
+    for thresh in thresh_values:
+        predictions = probs >= thresh
+        recall_values[thresh] = recall_score(truth, predictions)
+        precision_values[thresh] = precision_score(truth, predictions)
+        
+    return precision_values , recall_values
+
+
+def decisions_to_objectives(decisions, seed=None):
+    n_estimators = decisions[0]
+    max_depth = decisions[1]
+    # thresh_value = decisions[2]
+    
+    model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=seed)
+    model.fit(X_train, y_train)
+    
+    probs = list(map(lambda x: x[1], model.predict_proba(X_test.loc[df_y_test.index])))
+    
+    precision_values, recall_values = probs_to_precision_recall(y_test.values, probs, thresh_values)
+    accuracy_vanilla = model.score(X_test, y_test)
+    
+    #return precision_values[thresh_value], recall_values[thresh_value]
+    return accuracy_vanilla, np.max(list(precision_values.values()))
+
+
+# +
+#for idx_model in models:
+#    models[idx_model]['precision'], models[idx_model]['recall'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
+    
+for idx_model in models:
+    models[idx_model]['accuracy'], models[idx_model]['precision'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
+
+# +
+precision_values = [model_params["precision"] for idx_model, model_params in models.items()]
+accuracy_values = [model_params["accuracy"] for idx_model, model_params in models.items()]
+
+plt.scatter(accuracy_values, precision_values)
+plt.scatter(accuracy_vanilla, np.max(list(precision_vanilla.values())))
+# -
+
+accuracy_vanilla
+
+
+
+# +
+recall_values = [model_params["recall"] for idx_model, model_params in models.items()]
+precision_values = [model_params["precision"] for idx_model, model_params in models.items()]
+
+plt.scatter(recall_values, precision_values)
+plt.xlabel("recall")
+plt.ylabel("precision")
+plt.plot(recall_vanilla.values(), precision_vanilla.values(), '-o', label="vanilla", color="gray")
+# -
+
+# # Old
+
+# +
 X_all, y_all = datasets.load_digits(n_class=10, return_X_y=True, as_frame=True)
 y_all = pd.DataFrame(y_all)
 
@@ -18,11 +213,12 @@ y_all = pd.DataFrame(y_all)
 X_all.index.name = 'idx'
 y_all.index.name = 'idx'
 
-y_all['is_even'] = (y_all['target'] % 2 == 0).astype(int)
+col_target = 'is_even'
+y_all[col_target] = (y_all['target'] % 2 == 0).astype(int)
 
 print(y_all['target'].value_counts())
 print('-' * 20)
-print(y_all['is_even'].value_counts())
+print(y_all[col_target].value_counts())
 
 print(X_all.shape)
 X_all.head(4)
@@ -31,7 +227,7 @@ X_all.head(4)
 test_size = 0.2
 seed = 1
 
-X_train, X_test, y_train, y_test  = train_test_split(X_all, y_all['is_even'], test_size=test_size, random_state=seed)
+X_train, X_test, y_train, y_test  = train_test_split(X_all, y_all[col_target], test_size=test_size, random_state=seed)
 
 X_train.head(2)
 
@@ -88,6 +284,8 @@ for thresh in thresh_values:
     recall_values[thresh] = recall_score(df_y_test['truth'], predictions)
     precision_values[thresh] = precision_score(df_y_test['truth'], predictions)
 # -
+
+
 
 plt.plot(recall_values.values(), precision_values.values(), '-o')
 #plt.xlim(0.9, 1.)
