@@ -96,20 +96,30 @@ df_y_test.query('truth == 1')['prob_1'].hist(bins=bins, color='green', alpha=0.7
 plt.legend()
 
 # +
+thresh = 0.5
+predictions = df_y_test['prob_1'] >= thresh
+
+precision_vanilla = precision_score(df_y_test['truth'], predictions)
+recall_vanilla = recall_score(df_y_test['truth'], predictions)
+
+# ---
 thresh_values = np.arange(0.1, 1., 0.02)
-recall_vanilla = {}
-precision_vanilla = {}
+recalls_vanilla = {}
+precisions_vanilla = {}
 
 
 for thresh in thresh_values:
     predictions = df_y_test['prob_1'] >= thresh
-    recall_vanilla[thresh] = recall_score(df_y_test['truth'], predictions)
-    precision_vanilla[thresh] = precision_score(df_y_test['truth'], predictions)
+    recalls_vanilla[thresh] = recall_score(df_y_test['truth'], predictions)
+    precisions_vanilla[thresh] = precision_score(df_y_test['truth'], predictions)
     
     
-plt.plot(recall_vanilla.values(), precision_vanilla.values(), '-o')
+plt.plot(recalls_vanilla.values(), precisions_vanilla.values(), '-o', color="gray", alpha=0.7)
+plt.scatter(recall_vanilla, precision_vanilla, color="green", s=200)
 plt.xlabel("recall")
 plt.ylabel("precision")
+plt.xlim(0.,1)
+plt.ylim(0.,1)
 # -
 
 # # Optimisation
@@ -117,7 +127,7 @@ plt.ylabel("precision")
 # ## Decision Space
 
 # +
-n_estimators = [2, 10 , 20, 30, 50, 100, 200, 300 ] #list(_n_estimators) + list(_n_estimators * 10) + list(_n_estimators * 100) + [1000, 2000, 3000]
+n_estimators = [2, 5, 10, 15, 20, 30, 50, 100, 200, 300] #list(_n_estimators) + list(_n_estimators * 10) + list(_n_estimators * 100) + [1000, 2000, 3000]
 max_depth = [None, 3, 5, 10, 15, 20] #[None, 2, 3, 5, 7, 10, 15, 20]
 #thresh_values = np.arange(0.1, 1., 0.1) #np.arange(0.1, 1., 0.02)
 
@@ -145,6 +155,7 @@ print(f'The number of models {len(models):,}\nshould be the same as the combinat
 # # Mapping To Objective Space
 
 # +
+# TODO: delete probs_to_precision_recall. Not required
 def probs_to_precision_recall(truth, probs, thresh_values):
     recall_values = {}
     precision_values = {}
@@ -157,7 +168,7 @@ def probs_to_precision_recall(truth, probs, thresh_values):
     return precision_values , recall_values
 
 
-def decisions_to_objectives(decisions, seed=None):
+def decisions_to_objectives(decisions, seed=None, thresh=0.5):
     n_estimators = decisions[0]
     max_depth = decisions[1]
     # thresh_value = decisions[2]
@@ -165,13 +176,18 @@ def decisions_to_objectives(decisions, seed=None):
     model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=seed)
     model.fit(X_train, y_train)
     
-    probs = list(map(lambda x: x[1], model.predict_proba(X_test.loc[df_y_test.index])))
+    probs = np.array(list(map(lambda x: x[1], model.predict_proba(X_test.loc[df_y_test.index]))))
     
-    precision_values, recall_values = probs_to_precision_recall(y_test.values, probs, thresh_values)
-    accuracy_vanilla = model.score(X_test, y_test)
+    #precision_values, recall_values = probs_to_precision_recall(y_test.values, probs, thresh_values)
+    #accuracy_vanilla = model.score(X_test, y_test)
+    
+    predictions = probs >= thresh
+
+    precision_ = precision_score(df_y_test['truth'], predictions)
+    recall_ = recall_score(df_y_test['truth'], predictions)
     
     #return precision_values[thresh_value], recall_values[thresh_value]
-    return accuracy_vanilla, np.max(list(precision_values.values()))
+    return precision_, recall_
 
 
 # +
@@ -179,14 +195,19 @@ def decisions_to_objectives(decisions, seed=None):
 #    models[idx_model]['precision'], models[idx_model]['recall'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
     
 for idx_model in models:
-    models[idx_model]['accuracy'], models[idx_model]['precision'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
+    models[idx_model]['precision'], models[idx_model]['recall'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
 
 # +
 precision_values = [model_params["precision"] for idx_model, model_params in models.items()]
-accuracy_values = [model_params["accuracy"] for idx_model, model_params in models.items()]
+recall_values = [model_params["recall"] for idx_model, model_params in models.items()]
 
-plt.scatter(accuracy_values, precision_values)
-plt.scatter(accuracy_vanilla, np.max(list(precision_vanilla.values())))
+plt.scatter(recall_values, precision_values, color="gray")
+#plt.scatter(accuracy_vanilla, np.max(list(precision_vanilla.values())))
+plt.scatter(recall_vanilla, precision_vanilla, color="green", s=200)
+plt.xlabel("recall")
+plt.ylabel("precision")
+plt.xlim(0.,1)
+plt.ylim(0.,1)
 # -
 
 accuracy_vanilla
