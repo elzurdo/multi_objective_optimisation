@@ -74,7 +74,7 @@ X_train.head(2)
 
 # +
 # classifier fit and score
-seed = 5
+seed = 4
 model = RandomForestClassifier(n_estimators=20, random_state=seed)
 
 model.fit(X_train, y_train)
@@ -118,9 +118,51 @@ plt.plot(recalls_vanilla.values(), precisions_vanilla.values(), '-o', color="gra
 plt.scatter(recall_vanilla, precision_vanilla, color="green", s=200)
 plt.xlabel("recall")
 plt.ylabel("precision")
-plt.xlim(0.,1)
-plt.ylim(0.,1)
+plt.xlim(0.,1.02)
+plt.ylim(0.,1.02)
+
+# +
+from sklearn.model_selection import cross_validate
+
+cv = 5
+scoring = ["precision", "recall"]
+
+seed = 4
+model_cv = RandomForestClassifier(n_estimators=20, random_state=seed)
+scores = cross_validate(model_cv, X_all.values, y_all[col_target].values, scoring=scoring,
+                        cv=cv, return_train_score=True, n_jobs=-1)
+
+
+recall_vanilla_mean = scores["test_recall"].mean()
+recall_vanilla_std  = scores["test_recall"].std()
+
+precision_vanilla_mean = scores["test_precision"].mean()
+precision_vanilla_std  = scores["test_precision"].std()
 # -
+
+
+
+scores["test_recall"]
+
+scores["test_recall"]
+
+plt.plot(recalls_vanilla.values(), precisions_vanilla.values(), '-o', color="gray", alpha=0.7)
+plt.scatter(recall_vanilla, precision_vanilla, color="green", s=200)
+plt.errorbar(recall_vanilla_mean, precision_vanilla_mean, xerr=recall_vanilla_std, yerr=precision_vanilla_std)
+plt.scatter(scores["test_recall"], scores["test_precision"])
+plt.xlabel("recall")
+plt.ylabel("precision")
+plt.xlim(0.,1.02)
+plt.ylim(0.,1.02)
+
+plt.plot(recalls_vanilla.values(), precisions_vanilla.values(), '-o', color="gray", alpha=0.7)
+plt.scatter(recall_vanilla, precision_vanilla, color="green", s=200)
+plt.errorbar(recall_vanilla_mean, precision_vanilla_mean, yerr=precision_vanilla_std, xerr=recall_vanilla_std)
+plt.scatter(scores["test_recall"], scores["test_precision"])
+plt.xlabel("recall")
+plt.ylabel("precision")
+plt.xlim(0.,1.02)
+plt.ylim(0.,1.02)
 
 # # Optimisation
 
@@ -168,27 +210,23 @@ def probs_to_precision_recall(truth, probs, thresh_values):
     return precision_values , recall_values
 
 
-def decisions_to_objectives(decisions, seed=None, thresh=0.5):
+def decisions_to_objectives(decisions, seed=None, thresh=0.5, cv=5):
+    scoring = ["precision", "recall"]
+    
     n_estimators = decisions[0]
     max_depth = decisions[1]
     # thresh_value = decisions[2]
     
     model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=seed)
-    model.fit(X_train, y_train)
+    scores = cross_validate(model, X_all.values, y_all[col_target].values, scoring=scoring,
+                            cv=cv, return_train_score=False, n_jobs=-1)
     
-    probs = np.array(list(map(lambda x: x[1], model.predict_proba(X_test.loc[df_y_test.index]))))
+    recall_ = scores["test_recall"].mean() - scores["test_recall"].std()
+    precision_ = scores["test_precision"].mean() - scores["test_precision"].std()
     
-    #precision_values, recall_values = probs_to_precision_recall(y_test.values, probs, thresh_values)
-    #accuracy_vanilla = model.score(X_test, y_test)
-    
-    predictions = probs >= thresh
-
-    precision_ = precision_score(df_y_test['truth'], predictions)
-    recall_ = recall_score(df_y_test['truth'], predictions)
     
     #return precision_values[thresh_value], recall_values[thresh_value]
     return precision_, recall_
-
 
 # +
 #for idx_model in models:
@@ -196,6 +234,20 @@ def decisions_to_objectives(decisions, seed=None, thresh=0.5):
     
 for idx_model in models:
     models[idx_model]['precision'], models[idx_model]['recall'] = decisions_to_objectives(models[idx_model]['params'], seed=seed)    
+
+# +
+precision_values = [model_params["precision"] for idx_model, model_params in models.items()]
+recall_values = [model_params["recall"] for idx_model, model_params in models.items()]
+
+plt.scatter(recall_values, precision_values, color="gray")
+
+#plt.scatter(accuracy_vanilla, np.max(list(precision_vanilla.values())))
+plt.scatter(recall_vanilla_mean-recall_vanilla_std , precision_vanilla_mean-recall_vanilla_std, color="green", s=200)
+#plt.errorbar(recall_vanilla_mean, precision_vanilla_mean, yerr=precision_vanilla_std, xerr=recall_vanilla_std)
+plt.xlabel("recall")
+plt.ylabel("precision")
+#plt.xlim(0.,1)
+#plt.ylim(0.,1)
 
 # +
 precision_values = [model_params["precision"] for idx_model, model_params in models.items()]
