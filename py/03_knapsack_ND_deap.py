@@ -73,7 +73,7 @@ def generate_packages(n_packages = 20,
 
 n_packages = 300
 n_attributes = 2
-packages = generate_packages(n_packages, value_distribution_mode="squared")
+packages = generate_packages(n_packages, value_distribution_mode="random")
 # -
 
 # # `DEAP` Setup
@@ -189,7 +189,7 @@ toolbox.register("select", selNSGA2)
 # Using VarOr algorithm ([documentation](https://deap.readthedocs.io/en/master/api/algo.html#deap.algorithms.varOr), [Github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py#L192))
 
 # +
-def genetic_algorithm(verbose=False):
+def genetic_algorithm(verbose=False, hack=False):
     NGEN = 100
     MU = 50
     LAMBDA = 100
@@ -212,26 +212,29 @@ def genetic_algorithm(verbose=False):
     
     #return pop, stats, hof, logbook
     
-    _, logbook, all_generations = \
-    eaMuPlusLambda_hack(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
-                              halloffame=hof, verbose=verbose)
-    
-    return pop, stats, hof, logbook, all_generations
+    if hack:
+        _, logbook, all_generations = \
+        eaMuPlusLambda_hack(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+                                  halloffame=hof, verbose=verbose)
+
+        return pop, stats, hof, logbook, all_generations
+    else:
+        _, logbook = \
+        eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+                                  halloffame=hof, verbose=verbose)
+
+        return pop, stats, hof, logbook
+        
 
 #pop, stats, hof, logbook = genetic_algorithm()
-pop, stats, hof, logbook, all_generations = genetic_algorithm()
+pop, stats, hof, logbook = genetic_algorithm(hack=False)
 # -
 
 
 
-scatter_pop(all_generations[1], color="purple", label=None)
-scatter_pop(all_generations[2], color="green", label=None)
-scatter_pop(all_generations[3], color="blue", label=None)
-scatter_pop(all_generations[3], color="red", label=None)
-scatter_pop(all_generations[99], color="black", label=None)
-scatter_pop(hof, color="green", label=None)
 
-population_df(all_generations[1])
+
+
 
 # +
 pop_values = [np.sum([packages[package_id]["value"] for package_id in indv]) for indv in pop]
@@ -264,8 +267,6 @@ def population_df(pop):
 
 df_hof = population_df(hof)    
 # -
-
-df_hof
 
 len(df_hof), len(df_population)
 
@@ -440,7 +441,24 @@ def eaMuPlusLambda_hack(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
             print(logbook.stream)
 
     return population, logbook, all_generations
+
+# +
+
+pop, stats, hof, logbook, all_generations = genetic_algorithm(hack=True)
+
+
+
 # -
+
+scatter_pop(all_generations[1], color="purple", label=None)
+scatter_pop(all_generations[2], color="orange", label=None)
+scatter_pop(all_generations[3], color="blue", label=None)
+scatter_pop(all_generations[3], color="red", label=None)
+scatter_pop(all_generations[99], color="black", label=None)
+scatter_pop(hof, color="green", label=None)
+
+
+population_df(all_generations[1])
 
 for _ in range(['a', 'b']):
     print(_)
