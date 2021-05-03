@@ -2,7 +2,11 @@
 This repository is dedicated to tutorials to learn and practice optimising for multiple parameters 
 using Pareto Fronts.
 
-This tutorial has been delivered in PyData Global 2020 ([abstract](https://global.pydata.org/talks/82)).  
+This tutorial will be presented on March 13th 2021 in PyCon USA
+
+<img src="https://tinyurl.com/vrdj29w9" width="300">
+
+It has been delivered in PyData Global 2020 ([abstract](https://global.pydata.org/talks/82)).  
 <img src="https://global.pydata.org/assets/images/logo.png" width="300">
 
 
