@@ -2,7 +2,7 @@
 This repository is dedicated to tutorials to learn and practice optimising for multiple parameters 
 using Pareto Fronts.
 
-This tutorial will be presented on March 13th 2021 in PyCon USA
+This tutorial will be presented on March 13th 2021 in PyCon USA ([abstract](https://us.pycon.org/2021/schedule/presentation/39/))  
 
 <img src="https://tinyurl.com/vrdj29w9" width="300">
 
