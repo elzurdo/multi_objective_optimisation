@@ -18,6 +18,14 @@
 # For the most part we follow thier [Knapsack tutorial](https://deap.readthedocs.io/en/master/examples/ga_knapsack.html), in which the individual knapsacks inherite from `set`s. 
 
 # +
+# Let's first verify that we have DEAP setup 
+
+try:
+    from deap import creator
+except:
+    # %pip install deap
+
+# +
 import numpy as np
 
 import matplotlib.pyplot as plt
@@ -230,6 +238,8 @@ indv = toolbox.individual()
 indv_fitness = eval_knapsack(indv)
 
 print(f"The fitness (weight, monetary value) of knapsack {indv}\nis: \n{indv_fitness}")
+
+
 # -
 
 # ## Transformations
@@ -241,74 +251,9 @@ print(f"The fitness (weight, monetary value) of knapsack {indv}\nis: \n{indv_fit
 # `child1` gets that `parent1` and `parent2` overlap: `child1 = parent1 & parent2`
 #
 # `child2` gets their difference: `child2 = parent1 ^ parent2`
-
-# +
-# from deap.tools import cxTwoPoint
-# parent1, parent2 = toolbox.individual(), toolbox.individual()
-# print(f"parent 1:\n{parent1}")
-# print(f"parent 2:\n{parent2}")
-# child1, child2 = cxTwoPoint(parent1, parent2)
-
-# +
-# source code, DEAP: https://deap.readthedocs.io/en/master/examples/ga_onemax_numpy.html
-# but updated
-
-# def cxTwoPointCopy(ind1, ind2):
-#     """Execute a two points crossover with copy on the input individuals. The
-#     copy is required because the slicing in numpy returns a view of the data,
-#     which leads to a self overwritting in the swap operation. It prevents
-#     ::
-    
-#         >>> import numpy
-#         >>> a = numpy.array((1,2,3,4))
-#         >>> b = numpy.array((5,6,7,8))
-#         >>> a[1:3], b[1:3] = b[1:3], a[1:3]
-#         >>> print(a)
-#         [1 6 7 4]
-#         >>> print(b)
-#         [5 6 7 8]
-#     """
-#     size = len(ind1)
-#     cxpoint1 = random.randint(1, size)
-#     cxpoint2 = random.randint(1, size - 1)
-#     if cxpoint2 >= cxpoint1:
-#         cxpoint2 += 1
-#     else: # Swap the two cx points
-#         cxpoint1, cxpoint2 = cxpoint2, cxpoint1
-
-    
-#     # --- Eyal's Hack ---
-#     #ind1[cxpoint1:cxpoint2], ind2[cxpoint1:cxpoint2] \
-#     #    = ind2[cxpoint1:cxpoint2].copy(), ind1[cxpoint1:cxpoint2].copy()
-    
-#     child1 = ind1.copy()
-#     child2 = ind2.copy()
-    
-#     child1[cxpoint1:cxpoint2], child2[cxpoint1:cxpoint2] \
-#         = ind2[cxpoint1:cxpoint2].copy(), ind1[cxpoint1:cxpoint2].copy()
-#     # -------------------
-        
-#     return child1, child2
-
-
-# parent1, parent2 = toolbox.individual(), toolbox.individual()
-# print(f"parent 1:\n{parent1}")
-# print(f"parent 2:\n{parent2}")
-# print(f"parent overlap:\n{set(parent1) & set(parent2)}")
-
-# print("-" * 20)
-
-# child1, child2 = cxTwoPointCopy(parent1, parent2)
-
-# print(f"child 1:\n{child1}")
-# print(f"child 2:\n{child2}")
-
-# print("-" * 20)
-# print(f"child 1 inherited from parent 2 (which not in parent1):\n{(set(child1) & set(parent2)) - set(parent1)}")
-# print(f"child 2 inherited from parent 1 (which not in parent2):\n{(set(child2) & set(parent1)) - set(parent2)}")
-
-pass
-
+#
+#
+# Note: the `VarOr` algorithm below uses only `child1` as and offspring and disregards `child2`.
 
 # +
 def crossover_set(ind1, ind2):
@@ -338,26 +283,38 @@ print(f"children overlap:\n{set(child1) & set(child2)}")
 # -
 
 # ### Mutations
+#
+# In the original demo they mutate only one package.  
+# Perhaps in a future version we can mutate more than one to get larger diversity.
+#
+#
 
 # +
-# def mutate_numpy(individual):
-#     """Mutation that pops or add an element."""
-#     if random.random() < 0.5:
-#         if len(individual) > 0:     # We cannot pop from an empty set
-#             #individual.remove(random.choice(sorted(tuple(individual))))
-#             idx = random.choice(range(len(individual)))
-#             individual = np.delete(individual, idx)
-#     else:
-#         #individual.add(random.randrange(n_packages))
-#         individual = np.append(individual, random.randrange(n_packages))
-#     return individual,
-
-# knapsack3 = toolbox.individual()
-# print(knapsack3)
-# mutate_numpy(knapsack3)
-
-# +
+# this is the function that we will use later one
 def mutate_set(individual):
+    """Mutation that pops or add an element."""
+    if random.random() < 0.5:
+        if len(individual) > 0:     # We cannot pop from an empty set
+            individual.remove(random.choice(sorted(tuple(individual))))
+    else:
+        individual.add(random.randrange(n_packages))
+    return individual,
+
+knapsack3 = toolbox.individual()
+print(f"original:\n{knapsack3}")
+child3 = mutate_set(knapsack3)
+print(f"\nmutated:\n{child3[0]}")
+print(f"\ndifference:\n{child3[0] ^ knapsack3}")
+
+
+# +
+# for displaying purposes
+# reason: here we use the toolbox.clone so we can actually 
+#         see a difference between child3 and knapsack3
+#         I'm not sure why this is not apparent when not cloned
+# In the actual run the toolbox.clone is performed in the `varOr` function
+
+def mutate_set_hack(individual):
     """Mutation that pops or add an element."""
     mutated = toolbox.clone(individual)
     if random.random() < 0.5:
@@ -367,22 +324,39 @@ def mutate_set(individual):
         mutated.add(random.randrange(n_packages))
     return mutated,
 
-knapsack3 = toolbox.individual()
-print(f"original:\n{knapsack3}")
-child3 = mutate_set(knapsack3)
-print(f"\nmutated:\n{child3[0]}")
-print(f"\ndifference:\n{child3[0] ^ knapsack3}")
+knapsack4 = toolbox.individual()
+print(f"original:\n{knapsack4}")
+child4 = mutate_set_hack(knapsack4)
+print(f"\nmutated:\n{child4[0]}")
+print(f"\ndifference:\n{child4[0] ^ knapsack4}")
+# -
 
-# +
+#
+#
+# We now register all of the custom functions into the `Toolbox`. 
+
 toolbox.register("evaluate", eval_knapsack)
 toolbox.register("mate", crossover_set)
 toolbox.register("mutate", mutate_set)
 
-#toolbox.register("mate", cxTwoPointCopy)
-#toolbox.register("mutate", mutate_numpy)
+# ## Selection Function
+#
+# Getting the bleeding edge Pareto Front Evolutionary Algorithms is one of the main reason to use packages like `DEAP`. 
+#
+# Here we imported 
+# * `selSPEA2`
+# * `selNSGA2`   
+# and need to choose between them. 
+#
+# This sort of decision is beyond the scope of this tutorial, so for the time being, consider them practically equilvalent. There is a lot of literature on this topic, if you would like to learn more.
+#
+# > "There can be ~only~ [$\ge$] one!").  
+#
+#
+# <img src="https://i.ytimg.com/vi/Oc9fUbjJbAU/maxresdefault.jpg" width=300>
+#
 
 toolbox.register("select", selSPEA2)
-# -
 
 # # Running Evolution
 #
@@ -490,8 +464,7 @@ def genetic_algorithm(verbose=False, hack=False):
         
 
 pop, stats, hof, logbook = genetic_algorithm(hack=False)
-# +
-
+# -
 print("statistics of the last generation population")
 stats.compile(pop)
 
