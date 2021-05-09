@@ -58,13 +58,11 @@ Important Notes:
 --- Live Stream (Slide Deck ends) ---
 * Break (5 minutes) 
 * Applicability to real world problems (10 minutes)
-* Hands On: Prototyping with the DEAP module (10 minutes)
+* Hands On: Prototyping with the DEAP module (10 minutes) <a href="http://bit.ly/deap-knapsack-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>  
 * Real World Applications (Time permitting)
     * Case study: Protein Design (5 minutes)
     * Case study: Machine Learning HyperParameter Tuning (5m)
 * Summary and Discussion (10 minutes)
-
-
 
 You can also access all the material in this repository, including video recordings.
 
