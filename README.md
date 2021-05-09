@@ -32,8 +32,8 @@ Welcome and thanks for attending this tutorial on multi-objective optimisation!
 ## What You Will Learn and Practice
 
 * The shortcomings of the common practice of Single Objective Optimisation
-* Why Pareto Fronts yield better solutions
-* Applying Pareto Fronts to Genetic Algorithms
+* What Pareto Fronts are and why they yield better solutions
+* Applying Pareto Fronts to Genetic Algorithms to search for optimal solution in intractable search spaces.
 * Applicability in the real world
 
 
@@ -45,6 +45,7 @@ Important Notes:
 * Please be mindful that the agenda is divided to Live parts and Recorded. You will be instructed when to use each.
 * All the recorded parts and links to the Jupyter notebooks may be found in [this Slide Deck](https://docs.google.com/presentation/d/1UQv2mQcWgKfiLC3TdRnYiN1nuz4WSc-08VhiEognevc/edit#slide=id.p) and this README file.
 * If you are familiar with the basics of Pareto Fronts and Genetic Algorithms, feel free to jump right into the fully annotated notebooks.  
+
 
 * Welcome, Motivation, Instructions (5 minutes - Live Stream)   
 --- Recorded Sessions start he, please use [this Slide Deck](https://docs.google.com/presentation/d/1UQv2mQcWgKfiLC3TdRnYiN1nuz4WSc-08VhiEognevc/edit#slide=id.p) ---

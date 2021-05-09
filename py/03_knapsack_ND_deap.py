@@ -1,4 +1,22 @@
 # -*- coding: utf-8 -*-
+# # `DEAP` as a Prototyping Tool
+#
+# <img src="https://deap.readthedocs.io/en/master/_images/deap_long.png" width=300>
+#
+#
+# > `DEAP` is a novel evolutionary computation framework for rapid prototyping and testing of ideas. It seeks to make algorithms explicit and data structures transparent. It works in perfect harmony with parallelisation mechanism such as multiprocessing and `SCOOP`. 
+#
+# `DEAP` contains numerous concepts and many features to build your own evolutions.
+#
+# [`DEAP` Documentation](https://deap.readthedocs.io/en/master/)
+
+# Here we demo its use to solve for the Knapsack problem
+#
+# <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Knapsack.svg" width=250>
+#
+#
+# For the most part we follow thier [Knapsack tutorial](https://deap.readthedocs.io/en/master/examples/ga_knapsack.html), in which the individual knapsacks inherite from `set`s. 
+
 # +
 import numpy as np
 
@@ -20,6 +38,18 @@ plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
 plt.rc('axes', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 plt.rcParams['figure.figsize'] = 12, 8
+# -
+
+# # Packages
+#
+# Let's create some data!
+#
+# <img src="https://uk.packsize.com/wp-content/uploads/sites/11/2015/05/wp-boxes.jpg" width=300>
+#
+#
+# Here we generate `n_packages` packages and assign each a weight and monetary value. 
+
+n_packages = 300
 
 
 # +
@@ -70,56 +100,119 @@ def generate_packages(n_packages = 20,
         
     return packages
 
-
-n_packages = 300
-n_attributes = 2
 packages = generate_packages(n_packages, value_distribution_mode="random")
 # -
 
 # # `DEAP` Setup
+#
+# `DEAP` provides multiple tools for the evolutionary setup and processing.
 
 from deap import creator
 from deap.base import Fitness, Toolbox
 from deap.tools import (
     initRepeat, 
-    selNSGA2,
     ParetoFront,
-    Statistics
+    Statistics,
+    selNSGA2,
+    selSPEA2
 )
 from deap.algorithms import eaMuPlusLambda 
 import random
 
+# ## Objectives via Fitness 
+#
+# > The provided `Fitness` class is an abstract class that needs a weights attribute in order to be functional. A minimizing fitness is built using negatives weights, while a maximizing fitness has positive weights. For example, the following line creates, in the creator, a ready to use single objective minimizing fitness named FitnessMin.
+#
+# Single Objective Optimisation
+# ```python
+# creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+# ```
+#
+# Multi-Objective Optimisation
+# ```python
+# creator.create("FitnessMulti", base.Fitness, weights=(-1.0, 1.0))
+# ```
+#
+# `weights`: `-1` is for minmising and `1` is for maximising
+#
+# > The weights can also be used to vary the importance of each objective one against another. This means that the weights can be any real number and only the sign is used to determine if a maximization or minimization is done. An example of where the weights can be useful is in the crowding distance sort made in the NSGA-II selection algorithm.
+#
+# [DEAP Documentation](https://deap.readthedocs.io/en/master/tutorials/basic/part1.html#fitness)
+#
+
 # +
-# Creating a class call Fitness and another called Individual
+# Creating a class called `Fitness` 
 
-# weights: -1 is for minmising and 1 is for maximising
-
+# In our order here we minimise weight and maximise monetary value
 creator.create("Fitness", Fitness, weights=(-1.0, 1.0))
-creator.create("Individual", set, fitness=creator.Fitness)
 
-# +
-# item_id : package (as in: an item in a knapsack) - (instead of attr_item)
-# individual: knapsack
-# population: population of knapsacks
+# -
+
+# ## Individuals and Populations
+#
+# Each solution is considered an *Individual* and has its fitness compared to counterparts collectively called the *Population*.  
+#
+#
+#
+#
+# <img src="https://www.chatelaine.com/wp-content/uploads/2019/07/5-most-popular-backpacks-feature.jpg" width=500>
+#
+#
+#
+# For additional information about inheritence from numpy see [DEAP documentation](https://deap.readthedocs.io/en/master/tutorials/advanced/numpy.html)
+#
+
+# In our case we will create the knapsacks each with up to `n_packages_per_knapsack` packages.
 
 n_packages_per_knapsack = 50
 
+
+# +
+# Creating a class called `Individual` which inherites from set
+
+creator.create("Individual", set, fitness=creator.Fitness)
+#creator.create("Individual", np.ndarray, fitness=creator.Fitness)
+# -
+
+# Creation of and operation on individuals is conducted within the `Toolbox`.
+#
+# > A toolbox for evolution that contains the evolutionary operators. At first the toolbox contains a `clone()` method that duplicates any element it is passed as argument, this method defaults to the `copy.deepcopy()` function. and a `map()` method that applies the function given as first argument to every items of the iterables given as next arguments, this method defaults to the `map()` function. You may populate the toolbox with any other function by using the `register()` method.
+#
+#
+# [DEAP documentation](https://deap.readthedocs.io/en/master/api/base.html?highlight=toolbox#toolbox)
+
 toolbox = Toolbox()
 
+# +
+# item_id : package (as in: an item in a knapsack) - (instead of attr_item)
+
 toolbox.register("item_id", random.randrange, n_packages)
-toolbox.register("individual", initRepeat, creator.Individual, 
-                 toolbox.item_id, n_packages_per_knapsack)
-toolbox.register("population", initRepeat, list, toolbox.individual)
-# -
+
 
 print(f"toolbox.item_id selects package id,\ne.g, {toolbox.item_id()}")
 
+# +
+# individual: knapsack
+
+toolbox.register("individual", initRepeat, creator.Individual, 
+                 toolbox.item_id, n_packages_per_knapsack)
+
 print(f"toolbox.individual generates a knapsack from package_ids,\ne.g, {toolbox.individual()}")
 
-print(f"toolbox.population generates a population of knapsacks from package_ids,\ne.g, {toolbox.population(5)}")
+# +
+# population: population of knapsacks
 
+toolbox.register("population", initRepeat, list, toolbox.individual)
+
+n_display = 3
+print(f"toolbox.population generating a population of {n_packages} knapsacks from package_ids,\ne.g, here we examine the first {n_display}\n{toolbox.population(n_packages)[:n_display]}")
+
+
+# -
 
 # # Custom Functions
+
+# ## Evaluating Fitness
 
 # +
 def eval_knapsack(individual):
@@ -133,7 +226,88 @@ def eval_knapsack(individual):
     return weight, value
 
 
-eval_knapsack(toolbox.individual())
+indv = toolbox.individual()
+indv_fitness = eval_knapsack(indv)
+
+print(f"The fitness (weight, monetary value) of knapsack {indv}\nis: \n{indv_fitness}")
+# -
+
+# ## Transformations
+
+# ### Crossover
+#
+# Here we use a different crossover from previous notebooks:
+#
+# `child1` gets that `parent1` and `parent2` overlap: `child1 = parent1 & parent2`
+#
+# `child2` gets their difference: `child2 = parent1 ^ parent2`
+
+# +
+# from deap.tools import cxTwoPoint
+# parent1, parent2 = toolbox.individual(), toolbox.individual()
+# print(f"parent 1:\n{parent1}")
+# print(f"parent 2:\n{parent2}")
+# child1, child2 = cxTwoPoint(parent1, parent2)
+
+# +
+# source code, DEAP: https://deap.readthedocs.io/en/master/examples/ga_onemax_numpy.html
+# but updated
+
+# def cxTwoPointCopy(ind1, ind2):
+#     """Execute a two points crossover with copy on the input individuals. The
+#     copy is required because the slicing in numpy returns a view of the data,
+#     which leads to a self overwritting in the swap operation. It prevents
+#     ::
+    
+#         >>> import numpy
+#         >>> a = numpy.array((1,2,3,4))
+#         >>> b = numpy.array((5,6,7,8))
+#         >>> a[1:3], b[1:3] = b[1:3], a[1:3]
+#         >>> print(a)
+#         [1 6 7 4]
+#         >>> print(b)
+#         [5 6 7 8]
+#     """
+#     size = len(ind1)
+#     cxpoint1 = random.randint(1, size)
+#     cxpoint2 = random.randint(1, size - 1)
+#     if cxpoint2 >= cxpoint1:
+#         cxpoint2 += 1
+#     else: # Swap the two cx points
+#         cxpoint1, cxpoint2 = cxpoint2, cxpoint1
+
+    
+#     # --- Eyal's Hack ---
+#     #ind1[cxpoint1:cxpoint2], ind2[cxpoint1:cxpoint2] \
+#     #    = ind2[cxpoint1:cxpoint2].copy(), ind1[cxpoint1:cxpoint2].copy()
+    
+#     child1 = ind1.copy()
+#     child2 = ind2.copy()
+    
+#     child1[cxpoint1:cxpoint2], child2[cxpoint1:cxpoint2] \
+#         = ind2[cxpoint1:cxpoint2].copy(), ind1[cxpoint1:cxpoint2].copy()
+#     # -------------------
+        
+#     return child1, child2
+
+
+# parent1, parent2 = toolbox.individual(), toolbox.individual()
+# print(f"parent 1:\n{parent1}")
+# print(f"parent 2:\n{parent2}")
+# print(f"parent overlap:\n{set(parent1) & set(parent2)}")
+
+# print("-" * 20)
+
+# child1, child2 = cxTwoPointCopy(parent1, parent2)
+
+# print(f"child 1:\n{child1}")
+# print(f"child 2:\n{child2}")
+
+# print("-" * 20)
+# print(f"child 1 inherited from parent 2 (which not in parent1):\n{(set(child1) & set(parent2)) - set(parent1)}")
+# print(f"child 2 inherited from parent 1 (which not in parent2):\n{(set(child2) & set(parent1)) - set(parent2)}")
+
+pass
 
 
 # +
@@ -147,36 +321,83 @@ def crossover_set(ind1, ind2):
     ind2 ^= temp                    # Symmetric Difference (inplace)
     return ind1, ind2
 
-knapsack1, knapsack2 = toolbox.individual(), toolbox.individual()
-print(knapsack1, knapsack2)
+parent1, parent2 = toolbox.individual(), toolbox.individual()
+print(f"parent 1:\n{parent1}")
+print(f"parent 2:\n{parent2}")
+print(f"parent overlap:\n{set(parent1) & set(parent2)}")
+print("-" * 20)
 
-crossover_set(knapsack1, knapsack2)
+
+child1, child2 = crossover_set(parent1, parent2)
+
+print(f"child 1:\n{child1}")
+print(f"child 2:\n{child2}")
+print(f"children overlap:\n{set(child1) & set(child2)}")
+
+
+# -
+
+# ### Mutations
+
+# +
+# def mutate_numpy(individual):
+#     """Mutation that pops or add an element."""
+#     if random.random() < 0.5:
+#         if len(individual) > 0:     # We cannot pop from an empty set
+#             #individual.remove(random.choice(sorted(tuple(individual))))
+#             idx = random.choice(range(len(individual)))
+#             individual = np.delete(individual, idx)
+#     else:
+#         #individual.add(random.randrange(n_packages))
+#         individual = np.append(individual, random.randrange(n_packages))
+#     return individual,
+
+# knapsack3 = toolbox.individual()
+# print(knapsack3)
+# mutate_numpy(knapsack3)
+# -
+
+from copy import deepcopy
 
 
 # +
 def mutate_set(individual):
     """Mutation that pops or add an element."""
+    mutated = deepcopy(individual)
     if random.random() < 0.5:
-        if len(individual) > 0:     # We cannot pop from an empty set
-            individual.remove(random.choice(sorted(tuple(individual))))
+        if len(mutated) > 0:     # We cannot pop from an empty set
+            mutated.remove(random.choice(sorted(tuple(mutated))))
     else:
-        individual.add(random.randrange(n_packages))
-    return individual,
+        mutated.add(random.randrange(n_packages))
+    return mutated,
 
 knapsack3 = toolbox.individual()
-print(knapsack3)
-mutate_set(knapsack3)
-# -
+print(f"original:\n{knapsack3}")
+child3 = mutate_set(knapsack3)
+print(f"\nmutated:\n{child3[0]}")
+print(f"\ndifference:\n{child3[0] ^ knapsack3}")
 
+# +
 toolbox.register("evaluate", eval_knapsack)
 toolbox.register("mate", crossover_set)
 toolbox.register("mutate", mutate_set)
-toolbox.register("select", selNSGA2)
 
+#toolbox.register("mate", cxTwoPointCopy)
+#toolbox.register("mutate", mutate_numpy)
 
-# # Running
+toolbox.register("select", selSPEA2)
+# -
+
+# # Running Evolution
 #
-# `eaMuPlusLambda` algorithm ([documentation](https://deap.readthedocs.io/en/master/api/algo.html), [Github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py#L248))
+# <img src="https://i.pinimg.com/originals/1a/5c/a8/1a5ca8373a83e8e84f8f268ee3ecf1de.png" width=400>
+#
+# The main algorithm for evolution is  `eaMuPlusLambda` algorithm (𝜇+𝜆) evolutionary algorithm, where:  
+# * 𝜇 - The number of individuals to select for the next generation.
+# * 𝜆 - The number of children to produce at each generation.
+#
+#
+# ([documentation](https://deap.readthedocs.io/en/master/api/algo.html), [Github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py#L248))
 #
 # ```python
 # evaluate(population)
@@ -186,16 +407,40 @@ toolbox.register("select", selNSGA2)
 #     population = select(population + offspring, mu)
 # ```
 #
-# Using VarOr algorithm ([documentation](https://deap.readthedocs.io/en/master/api/algo.html#deap.algorithms.varOr), [Github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py#L192))
+# Here we use the `VarOr` algorithm.
+#
+# > Part of an evolutionary algorithm applying only the variation part (crossover, mutation or reproduction). The modified individuals have their fitness invalidated. The individuals are cloned so returned population is independent of the input population.
+#
+# ([documentation](https://deap.readthedocs.io/en/master/api/algo.html#deap.algorithms.varOr), [Github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py#L192))
+
+# ## Hyper Parameters
+
+MU = 50         # The number of individuals to select for the next generation.
+LAMBDA = 100    # The number of children to produce at each generation.
+
+# +
+# Other hyper parameters
+NGEN = 100     # The stopping criterion: the number generations
+
+CXPB = 0.7     # The probability that an individual is selected for mating
+MUTPB = 0.3    # The probability that an individual is selected for mutation
+
+
+# -
+
+# Note:
+#
+# Above we see that we have selected
+# * `CXPB` - The probability that an individual is selected for mating
+# * `MUTPB` - The probability that an individual is selected for mutation
+#
+# Besides mating and mutating there is a third option for an individual: reproduction (i.e, to be cloned).   
+# * `1 - CXPB - MUTPB`   - The probablilty that an indiviaul is selected for reproduction (i.e, cloning)
+#
+# In my experience, when `CXPB - MUTPB != 1` (i.e, we enable cloning) the diversity is substantially reduced, and so I set `CXPB - MUTPB = 1`.
 
 # +
 def genetic_algorithm(verbose=False, hack=False):
-    NGEN = 100
-    MU = 50
-    LAMBDA = 100
-    CXPB = 0.7
-    MUTPB = 0.3
-    
     pop = toolbox.population(n=MU)
     hof = ParetoFront() # retrieve the best non dominated individuals of the evolution
     
@@ -205,12 +450,6 @@ def genetic_algorithm(verbose=False, hack=False):
     stats.register("std", np.std, axis=0)
     stats.register("min", np.min, axis=0)
     stats.register("max", np.max, axis=0)
-    
-    #_, logbook = \
-    #eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
-    #                          halloffame=hof, verbose=verbose)
-    
-    #return pop, stats, hof, logbook
     
     if hack:
         _, logbook, all_generations = \
@@ -226,33 +465,30 @@ def genetic_algorithm(verbose=False, hack=False):
         return pop, stats, hof, logbook
         
 
-#pop, stats, hof, logbook = genetic_algorithm()
 pop, stats, hof, logbook = genetic_algorithm(hack=False)
+# +
+
+print("statistics of the last generation population")
+stats.compile(pop)
+
+# +
+
+print("statistics of the Hall of Fame (Pareto Front of all generations)")
+stats.compile(hof)
+
+# +
+generation = 0
+
+print("Logbook of generation {generation}")
+
+logbook[generation]
+
+
 # -
 
-
-
-
-
-
-
-# +
-pop_values = [np.sum([packages[package_id]["value"] for package_id in indv]) for indv in pop]
-pop_weights = [np.sum([packages[package_id]["weight"] for package_id in indv]) for indv in pop]
-
-df_population = pd.DataFrame({"value": pop_values, "weight": pop_weights})
-df_population = pd.DataFrame(df_population.groupby(["value", "weight"]).size(), columns=["counts"]).reset_index()
-df_population.index.name = "knapsack_id"
-
-df_population.sort_values("counts", ascending=False)
-
-
-# +
-def scatter_pop(pop, color="purple", label=None):
-    df_population = population_df(pop)
-    
-    marker_size = 50 * df_population["counts"]
-    plt.scatter(df_population["weight"], df_population["value"], s=marker_size, alpha=0.3, color=color, label=label)
+# ## Diversity
+#
+# Some algorithms for meaningful insights of the population
 
 def population_df(pop):
     pop_values = [np.sum([packages[package_id]["value"] for package_id in indv]) for indv in pop]
@@ -265,23 +501,53 @@ def population_df(pop):
     #df_population.sort_values("counts", ascending=False)
     return df_population
 
-df_hof = population_df(hof)    
-# -
-
-len(df_hof), len(df_population)
 
 # +
+df_population = population_df(pop)
+
+print(df_population.shape)
+df_population.sort_values("counts", ascending=False).head(4)
+# -
+
+# exploring the diversity of the objectives
+# 1 - means unique
+# 2 - means duplicated
+# 3 - means tripled
+# 4 ...
+df_population["counts"].value_counts()
+
+# Same thing but for the Hall of Fame.
+
+# +
+df_hof = population_df(hof)
+
+print(df_hof.shape)
+display(df_population["counts"].value_counts())
+df_hof.sort_values("counts", ascending=False).head(4)
+
+
+# -
+
+# ## Visualising
+
+def scatter_pop(pop, color="purple", label=None):
+    df_population = population_df(pop)
+    
+    marker_size = 50 * df_population["counts"]
+    plt.scatter(df_population["weight"], df_population["value"], s=marker_size, alpha=0.3, color=color, label=label)
 
 
 marker_size = 50 * df_population["counts"]
-plt.scatter(df_population["weight"], df_population["value"], s=marker_size, alpha=0.3, color="purple", label="Current Population")
-plt.scatter(df_hof["weight"], df_hof["value"], marker="x", alpha=0.3, color="green", label="Pareto Front")
+plt.scatter(df_population["weight"], df_population["value"], s=marker_size, alpha=0.3, color="purple", label=f"final generation population ({len(df_population):,})")
+plt.scatter(df_hof["weight"], df_hof["value"], marker="x", alpha=0.3, color="green", label=f"Pareto Front of all generations ({len(df_hof):,})")
 plt.legend()
 
 
-# -
-
 # # Hack
+#
+# You'll notice a `hack` keyword which I use later for visualisation purposes.
+#
+# `hack` - yields only the 
 #
 # Goals:
 # * Improve diversity  
@@ -460,14 +726,7 @@ scatter_pop(hof, color="green", label=None)
 
 population_df(all_generations[1])
 
-for _ in range(['a', 'b']):
-    print(_)
-
-
-
 # # References
 # * [DEAP ga_knapsack](https://deap.readthedocs.io/en/master/examples/ga_knapsack.html)
 # * [DEAP `creator`](https://deap.readthedocs.io/en/master/api/creator.html?highlight=creator)
 # * [DEAP `base.Toolbox.register`](https://deap.readthedocs.io/en/master/api/base.html?highlight=register#deap.base.Toolbox.register)
-
-
