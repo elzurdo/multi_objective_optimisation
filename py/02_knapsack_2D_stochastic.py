@@ -78,9 +78,9 @@
 # Afterwhich we recommend that you explore different types of results by modfiying the variables flagged with ***CHANGE ME!***. We list in the [Summary](#Summary) section suggested actions to take, but feel free to be creative!
 #
 
-# <img src="https://global.pydata.org/assets/images/logo.png" width="300">  
+# <img src="https://tinyurl.com/vrdj29w9" width="700">  
 #
-# **One final note to PyData Global participants**  
+# **One final note to PyCon USA participants**  
 #
 # Don't worry if you don't manage to to go through everything in depth during the allocated time. You will be able to access to this notebook later.
 

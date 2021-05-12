@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+# This notebook may be used in Google Colab. To access press this button:    
+# <a href="https://bit.ly/deap-knapsack-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
+
 # # `DEAP` as a Prototyping Tool
 #
 # <img src="https://deap.readthedocs.io/en/master/_images/deap_long.png" width=300>
@@ -10,12 +13,18 @@
 #
 # [`DEAP` Documentation](https://deap.readthedocs.io/en/master/)
 
-# Here we demo its use to solve for the Knapsack problem
+# Here we demo its use to solve for the Knapsack problem.
 #
 # <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Knapsack.svg" width=250>
 #
 #
 # For the most part we follow thier [Knapsack tutorial](https://deap.readthedocs.io/en/master/examples/ga_knapsack.html), in which the individual knapsacks inherite from `set`s. 
+
+# <img src="https://tinyurl.com/vrdj29w9" width="700">  
+#
+# **One final note for PyCon USA participants**  
+#
+# Don't worry if you don't manage to to go through everything in depth during the allocated time. You will be able to access to this notebook later.
 
 # +
 # Let's first verify that we have DEAP setup 
@@ -562,6 +571,8 @@ plt.title('Knapsacks')
 # where we introduce the `all_generations` dictionary.
 #
 # We also show (but do not modify) the `varOr` function that is used.
+#
+# [source code in github](https://github.com/DEAP/deap/blob/master/deap/algorithms.py)
 
 def varOr(population, toolbox, lambda_, cxpb, mutpb):
     """Part of an evolutionary algorithm applying only the variation part
