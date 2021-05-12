@@ -47,7 +47,7 @@ Important Notes:
 * If you are familiar with the basics of Pareto Fronts and Genetic Algorithms, feel free to jump right into the fully annotated notebooks.  
 
 
-* Welcome, Motivation, Instructions (5 minutes - Live Stream)   
+* Welcome, Motivation, Instructions (10 minutes - Live Stream)   
 --- Recorded Sessions start he, please use [this Slide Deck](https://docs.google.com/presentation/d/1UQv2mQcWgKfiLC3TdRnYiN1nuz4WSc-08VhiEognevc/edit#slide=id.p) ---
 * Intro to Pareto Fronts (15 minutes)
 * Hands On: Pareto Fronts (25 minutes) <a href="https://bit.ly/pareto-front-colab" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="First: Open In Colab"/></a>
@@ -62,7 +62,7 @@ Important Notes:
 * Real World Applications (Time permitting)
     * Case study: Protein Design (5 minutes)
     * Case study: Machine Learning HyperParameter Tuning (5m)
-* Summary and Discussion (10 minutes)
+* Summary and Discussion (5 minutes)
 
 You can also access all the material in this repository, including video recordings.
 
