@@ -446,7 +446,8 @@ MUTPB = 0.3    # The probability that an individual is selected for mutation
 #
 # In my experience, when `CXPB - MUTPB != 1` (i.e, we enable cloning) the diversity is substantially reduced, and so I set `CXPB - MUTPB = 1`.
 
-# +
+# ## Knapsack Optimisation
+
 def genetic_algorithm(verbose=False, hack=False):
     pop = toolbox.population(n=MU)
     hof = ParetoFront() # retrieve the best non dominated individuals of the evolution
@@ -470,12 +471,21 @@ def genetic_algorithm(verbose=False, hack=False):
                                   halloffame=hof, verbose=verbose)
 
         return pop, stats, hof, logbook
-        
 
+
+# +
+# running the genetic algorithm (might take a while, depending on NGEN)
+        
 pop, stats, hof, logbook = genetic_algorithm(hack=False)
 # -
 print("statistics of the last generation population")
 stats.compile(pop)
+
+# The *Hall of Fame* (`hof`) is a `ParetoFront` object containing exactly that, the Pareto Front solutions of all the generations. 
+#
+# Further below in the `eaMuPlusLambda_hack` function you can identify it being updated by  `halloffame.update(offspring)`. 
+#
+# Let's examine the statistics of `hof`, where we expect the `avg` to be better than the final `pop`.
 
 # +
 
@@ -492,7 +502,7 @@ logbook[generation]
 
 # -
 
-# ## Diversity
+# ## Examining Diversity
 #
 # Some algorithms for meaningful insights of the population
 
@@ -534,7 +544,7 @@ df_hof.sort_values("counts", ascending=False).head(4)
 
 # -
 
-# ## Visualising
+# ## Visualising Final Population
 
 def scatter_pop(pop, color="purple", label=None, marker="o"):
     df_population = population_df(pop)
@@ -724,7 +734,9 @@ def eaMuPlusLambda_hack(population, toolbox, mu, lambda_, cxpb, mutpb, ngen,
             print(logbook.stream)
 
     return population, logbook, all_generations
-# -
+
+# +
+# running the genetic algorithm (might take a while, depending on NGEN)
 
 pop, stats, hof, logbook, all_generations = genetic_algorithm(hack=True)
 
