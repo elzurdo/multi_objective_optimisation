@@ -18,6 +18,18 @@ feature2 = st.sidebar.text_input('Change Objective 2 name', value= feature2_defa
 # Wack a Pareto Front
 
 **An interactive demo to learn to identfy Pareto Optimal solutions**
+
+
+You will be presented with distributions of solutions in the objective space.  
+Your task will be to correctly identify the Pareto Front of each distribution. 
+
+Instructions:  
+* Look at the distribution    
+* Guess the number of solutions that are Pareto Optimal  
+* Press the "Show me the Pareto Front!" button
+* Change **Wack Number** - to get a different distribution
+
+*More parameters may be modified on the side bar on the left.*
 """
 
 def generate_objectives(n_packages = 20,
@@ -55,8 +67,7 @@ def generate_objectives(n_packages = 20,
     return {feature1: weights, feature2: values}
 
 
-seed = st.number_input('Wack No. (change this to see a different distribution)', min_value=1, value=1, max_value=1000)
-"""*More parameters may be changed on the side bar on the left.*"""
+seed = st.number_input('Wack Number (change this to see a different distribution)', min_value=1, value=1, max_value=1000)
 
 n_packages = st.sidebar.number_input('No. of Solutions', min_value=5, value=50, max_value=400)
 mode_ = st.sidebar.selectbox(f'Optimisation direction of {feature1}, {feature2}', ["min, min","min, max","max, min", "max, max"])
