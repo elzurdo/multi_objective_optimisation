@@ -51,7 +51,7 @@ def generate_objectives(n_packages = 20,
 
 
 seed = st.number_input('Wack No. (change this to see a different distribution)', min_value=1, value=1, max_value=1000)
-
+"""*More parameters may be changed on the side bar on the left.*"""
 
 n_packages = st.sidebar.number_input('No. of Solutions', min_value=5, value=50, max_value=400)
 mode_ = st.sidebar.selectbox(f'Optimisation {feature1}, {feature2}', ["min min","min max","max min", "max max"])
@@ -132,7 +132,6 @@ guess_question = f'How many solutions are Pareto Optimal when optimising for {mo
 guess = st.text_input(guess_question)
 
 
-
 show_pareto = False
 show_pareto = st.button('Show me the Pareto Front!')
 
@@ -166,3 +165,17 @@ st.pyplot(plt.gcf())
 
 wack_file = "https://www.connections.com/hs-fs/hubfs/WhackAMoleTech.jpg"
 st.image(wack_file) # , width=1000)
+
+
+vilfredo_file = "https://upload.wikimedia.org/wikipedia/commons/f/fd/Vilfredo_Pareto_1870s2.jpg"
+
+text = """
+> Vilfredo Federico Damaso Pareto born Wilfried Fritz Pareto (15 July 1848 – 19 August 1923) was an Italian civil engineer, sociologist, economist, political scientist, and philosopher. He made several important contributions to economics, particularly in the study of income distribution and in the analysis of individuals' choices. He was also responsible for popularising the use of the term "elite" in social analysis.
+[Wikipedia](https://en.wikipedia.org/wiki/Vilfredo_Pareto)
+"""
+
+
+expander = st.beta_expander("Who was Pareto?")
+expander.image(vilfredo_file, width=200)
+expander.write(text)
+
