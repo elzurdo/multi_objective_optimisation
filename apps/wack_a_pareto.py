@@ -9,6 +9,12 @@ from operator import (truediv as div, mul)
 
 feature1, feature2 = "objective_1", "objective_2"
 
+"""
+# Wack a Pareto Front
+
+**In interactive demo to learn to identfiy Pareto Optimal solutions**
+"""
+
 def generate_objectives(n_packages = 20,
                       weight_mean = 0.1, weight_sd = 10,
                       value_mean = 0.1, value_sd = 100,
@@ -44,15 +50,10 @@ def generate_objectives(n_packages = 20,
     return {"objective_1": weights, "objective_2": values}
 
 
-seed = st.number_input('Wack No.', min_value=1, value=1, max_value=1000)
+seed = st.number_input('Wack No. (change this to see a different distribution)', min_value=1, value=1, max_value=1000)
 
 
-show_pareto = False
-show_pareto = st.button('Show me the Pareto Front!')
-
-
-
-n_packages = st.sidebar.number_input('No. of Solutions', min_value=5, value=50, max_value=100)
+n_packages = st.sidebar.number_input('No. of Solutions', min_value=5, value=50, max_value=400)
 mode_ = st.sidebar.selectbox(f'Optimisation {feature1}, {feature2}', ["min min","min max","max min", "max max"])
 
 
@@ -127,13 +128,41 @@ pareto_idxs = objectives_to_pareto_front(objective_values)
 
 plt.scatter(objective_values[feature1], objective_values[feature2], s=10, alpha=0.7, color='purple')
 
-if show_pareto:
+guess_question = f'How many solutions are Pareto Optimal when optimising for {mode_}?'
+guess = st.text_input(guess_question)
+
+
+
+show_pareto = False
+show_pareto = st.button('Show me the Pareto Front!')
+
+if show_pareto and guess != '':
+    guess_int = int(guess)
+
+    correct = guess_int == len(pareto_idxs)
+
+    if correct:
+        guess_result = f"You are correct! The Pareto Front consists of {guess_int} solutions"
+    else:
+        guess_result = f"Nope ...the Pareto Front consists of {len(pareto_idxs)} solutions (some might be subtle of the human eye)"
+
+    f"""{guess_result}"""
+
+
     plt.scatter([val for idx, val in enumerate(objective_values[feature1]) if idx in pareto_idxs],
                 [val for idx, val in enumerate(objective_values[feature2]) if idx in pareto_idxs],
                 marker='x', s=100, linewidth=4, color='green')
+elif show_pareto and guess == '':
+    """
+    You need to guess the number of solutions before I reveal ... ;-) 
+    """
 
 plt.xlabel(feature1)
 plt.ylabel(feature2)
 
 
 st.pyplot(plt.gcf())
+
+
+wack_file = "https://www.connections.com/hs-fs/hubfs/WhackAMoleTech.jpg"
+st.image(wack_file) # , width=1000)
