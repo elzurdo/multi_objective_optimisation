@@ -15,7 +15,7 @@ feature1 = st.sidebar.text_input('Change Objective 1 name', value= feature1_defa
 feature2 = st.sidebar.text_input('Change Objective 2 name', value= feature2_default)
 
 """
-# Wack a Pareto Front
+# Whack a Pareto Front!
 
 **An interactive demo to learn to identfy Pareto Optimal solutions**
 
