@@ -202,16 +202,16 @@ expander.write(text)
 
 text_more = """
 
-Check out my MOOC(ish) tutorial at: [http://bit.ly/improved-decisions-pareto](http://bit.ly/improved-decisions-pareto)  
+Check out my tutorial at: [http://bit.ly/improved-decisions-pareto](http://bit.ly/improved-decisions-pareto)  
 
-This free tutorial is presented on a Google Slide with embedded videos - so no promotions ... :-) 
+This free MOOC(ish) tutorial is presented on a Google Slide with embedded videos - so no adverts or promotions ... :-)   
 The main content may be watched on videos for 30 minutes.  
-For the hands on part I suggest a further hours, or so.  
+For the hands on parts I suggest a further 60-90 minutes, or so.  
 
 
 ### Abstract
 Decision making for multiple objectives is a non-trivial task, especially when they are in conflict. For example, how can one best overcome the classic trade-off between quality and cost of production, when the monetary value of quality is not defined? 
-In this MOOC you will learn about Pareto Fronts and how to use them in order to make better data driven decisions.
+In this Python hands on tutorial you will learn about Pareto Fronts and how to use them in order to make better data driven decisions.  
 
 ### Description
 When applicable, this Pareto Optimisation method provides better results than the common practice of combining multiple parameters into a single parameter heuristic. 
@@ -227,10 +227,6 @@ This introduction is geared towards anyone who makes data driven decisions,
  
   
  You will learn the advantages and shortcomings of the technique and be able to assess applicability for your own projects.
- 
-### About the Author
-[Eyal Kazin Ph.D](https://www.linkedin.com/in/eyal-kazin-0b96227a/)
-
 """
 
 expander_more = st.beta_expander("Where can I learn more?")
