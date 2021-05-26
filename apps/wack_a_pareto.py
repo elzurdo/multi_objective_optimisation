@@ -200,3 +200,44 @@ expander = st.beta_expander("Who was Pareto?")
 expander.image(vilfredo_file, width=200)
 expander.write(text)
 
+text_more = """
+
+Check out my MOOC(ish) tutorial at: [http://bit.ly/improved-decisions-pareto](http://bit.ly/improved-decisions-pareto)  
+
+This free tutorial is presented on a Google Slide with embedded videos - so no promotions ... :-) 
+The main content may be watched on videos for 30 minutes.  
+For the hands on part I suggest a further hours, or so.  
+
+
+### Abstract
+Decision making for multiple objectives is a non-trivial task, especially when they are in conflict. For example, how can one best overcome the classic trade-off between quality and cost of production, when the monetary value of quality is not defined? 
+In this MOOC you will learn about Pareto Fronts and how to use them in order to make better data driven decisions.
+
+### Description
+When applicable, this Pareto Optimisation method provides better results than the common practice of combining multiple parameters into a single parameter heuristic. 
+The reason for this is quite simple. The single heuristic approach is like horse binders limiting the view of the solution space, whereas Pareto Optimisation enables a bird’s eye view.
+
+Real world applications span from supply chain management, manufacturing, aircraft design, chemical engineering to land use planning and therapeutics discovery.
+
+### Target Audience  
+
+This introduction is geared towards anyone who makes data driven decisions, 
+ e.g, practitioners looking to improve their optimisation skills or 
+ or management interested in improving their communication with data providers, such as analysts.  
+ 
+  
+ You will learn the advantages and shortcomings of the technique and be able to assess applicability for your own projects.
+ 
+### About the Author
+[Eyal Kazin Ph.D](https://www.linkedin.com/in/eyal-kazin-0b96227a/)
+
+"""
+
+expander_more = st.beta_expander("Where can I learn more?")
+expander_more.write(text_more)
+
+
+"""
+Created by: [Eyal Kazin Ph.D](https://www.linkedin.com/in/eyal-kazin-0b96227a/)
+"""
+
