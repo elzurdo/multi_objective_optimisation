@@ -23,14 +23,21 @@ feature2 = st.sidebar.text_input('Change Objective 2 name', value= feature2_defa
 You will be presented with distributions of solutions in the objective space.  
 Your task will be to correctly identify the Pareto Front of each distribution. 
 
-Instructions:  
-* Look at the distribution    
+"""
+
+text_instructions = """
+* Look at the distribution below     
 * Fill in **Your Guess** with the number of solutions that are Pareto Optimal  
 * Press the **Show me the Pareto Front!** button
 * Change **Wack Number** - to get a different distribution
 
-*More parameters may be modified on the side bar on the left.*
+*More parameters may be modified in the left side bar.*
 """
+
+
+expander_instructions = st.beta_expander("Instructions")
+expander_instructions.write(text_instructions)
+
 
 def generate_objectives(n_packages = 20,
                       weight_mean = 0.1, weight_sd = 10,
@@ -76,9 +83,6 @@ mode_ = st.sidebar.selectbox(f'Optimisation direction of {feature1}, {feature2}'
 objective_values = generate_objectives(n_packages, seed=seed, value_distribution_mode=value_distribution_mode, visualise=False)
 
 
-# Objective Space declaration
-
-# CHANGE ME!
 if mode_ == "min, max":
     objective_mode, heuristic, soh_unit = {feature1: 'min', feature2: 'max'}, 'value/weight', '£/kg'
 elif mode_ == "min, min":
@@ -88,11 +92,6 @@ elif mode_ == "max, max":
 elif mode_ == "max, min":
     objective_mode, heuristic, soh_unit = {feature1: 'max', feature2: 'min'}, 'weight/value', 'kg/£'
 
-
-# These objects are used to calculate the relationships between the knapsacks.
-
-# for Single Objective Optimisation
-#direction_to_multiplier = {'min': div, 'max': mul}
 
 # for Pareto Optimal selection
 mode_to_operator = {'min': less_than, 'max': greater_than}
@@ -158,7 +157,7 @@ if show_pareto and guess != '':
     if correct:
         guess_result = f"You are correct! The Pareto Front consists of {guess_int} solutions."
     else:
-        guess_result = f"Nope ...the Pareto Front consists of {len(pareto_idxs)} solutions (some might be subtle of the human eye)."
+        guess_result = f"Nope ...the Pareto Front consists of {len(pareto_idxs)} solutions (some might be subtle to the human eye)."
 
     f"""{guess_result}"""
 
