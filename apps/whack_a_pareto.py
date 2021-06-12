@@ -25,6 +25,47 @@ Your task will be to correctly identify the Pareto Front of each distribution.
 
 """
 
+paretofront_file = "https://upload.wikimedia.org/wikipedia/commons/2/27/Pareto_Efficient_Frontier_1024x1024.png"
+
+text_pareto = """
+When making decision based on two or more objectives that are in conflict, 
+e.g, minimising product price while maximising its value, one needs to make trade-off decision.  
+
+A Pareto Front is a tool to assist in the decision process making. 
+
+It's easiest to understand what a Pareto Front is by examining a scatter plot of 
+*Pareto Optimal* solutions, as displayed above. 
+
+All dots are solutions and they are color coded by the following logic, assuming that 
+the objective is to maximise both "Quantity of Item 1" and "2":  
+* A solution that betters another in all objectives (in our case both dimensions) is said to dominate it. E.g, **N** 
+dominates **K** in both objectives. Also note that **E** dominates both **N** and **K** in both objectives.
+* Solutions that are dominated by at least on other solution is called a **Dominated Solution**. These are marked 
+here in gray, e.g, **K** is dominated by **N** (and **E**) and hence is labelled Dominated. Even though **N** dominates **K**, 
+the fact that **E** dominates it makes it Dominated, too.
+* A solution that is not dominated by any other solution is called ***Non Dominated Solution*** and is marked here in red. 
+E.g, we see that **E** is not dominated by any other solution. Even though **F** dominates it in the horizontal objective, 
+it does not in the vertical one. The same but vice versa is in its relationship with solution **D**. 
+
+To make sure you understand this, I suggest you scan all lettered solutions A-H, K and N and try to understand the 
+color coding according to this logic.
+
+Once this is understood we can define:  
+A Pareto Optimal solution is on that is Non Dominated.  
+
+A Pareto Front is a set of Pareto Optimal solutions.  
+
+Pareto Optimal solutions are all considered equally optimal, i.e, no reason to prefer one over the other, 
+until a subjective weighting is applied which enables their ranking according to a domain expert.   
+"""
+
+expander_pareto = st.beta_expander("What is a Pareto Front?")
+expander_pareto.image(paretofront_file, width=400)
+expander_pareto.write(text_pareto)
+
+
+
+
 text_instructions = """
 * Look at the distribution below     
 * Fill in **Your Guess** with the number of solutions that are Pareto Optimal  
@@ -239,7 +280,7 @@ This introduction is geared towards anyone who makes data driven decisions,
  You will learn the advantages and shortcomings of the technique and be able to assess applicability for your own projects.
 """
 
-expander_more = st.beta_expander("Where can I learn more?")
+expander_more = st.beta_expander("Where may I learn more?")
 expander_more.write(text_more)
 
 
