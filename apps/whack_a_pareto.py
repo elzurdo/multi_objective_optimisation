@@ -17,11 +17,11 @@ feature2 = st.sidebar.text_input('Change Objective 2 name', value= feature2_defa
 """
 # Whack a Pareto Front!
 
-**An interactive demo to learn to identfy Pareto Optimal solutions**
+**An interactive demo to learn to identify Pareto Optimal solutions**
 
 
-You will be presented with distributions of solutions in the objective space.  
-Your task will be to correctly identify the Pareto Front of each distribution. 
+You are presented with distributions of solutions in an objective space, and   
+the task is to correctly identify the Pareto Front of each distribution. 
 
 """
 
@@ -29,21 +29,21 @@ paretofront_file = "https://upload.wikimedia.org/wikipedia/commons/2/27/Pareto_E
 
 text_pareto = """
 When making decision based on two or more objectives that are in conflict, 
-e.g, minimising product price while maximising its value, one needs to make trade-off decision.  
+e.g, minimising product price while maximising its value, one might be required to make a trade-off decision.  
 
 A Pareto Front is a tool to assist in the decision process making. 
 
 It's easiest to understand what a Pareto Front is by examining a scatter plot of 
-*Pareto Optimal* solutions, as displayed above. 
+solutions, as displayed above. 
 
 All dots are solutions and they are color coded by the following logic, assuming that 
-the objective is to maximise both "Quantity of Item 1" and "2":  
-* A solution that betters another in all objectives (in our case both dimensions) is said to dominate it. E.g, **N** 
+the objective is to maximise both *Quantity of Item 1* and *2*:  
+* A solution that is better another in all objectives (in our case both dimensions) is said to *dominate* it. E.g, **N** 
 dominates **K** in both objectives. Also note that **E** dominates both **N** and **K** in both objectives.
-* Solutions that are dominated by at least on other solution is called a **Dominated Solution**. These are marked 
+* Solutions that are dominated by at least on other solution is called a ***Dominated Solution***. These are marked 
 here in gray, e.g, **K** is dominated by **N** (and **E**) and hence is labelled Dominated. Even though **N** dominates **K**, 
-the fact that **E** dominates it makes it Dominated, too.
-* A solution that is not dominated by any other solution is called ***Non Dominated Solution*** and is marked here in red. 
+the fact that **E** dominates it makes **N** Dominated, too.
+* A solution that is not dominated by any other solution is called a ***Non Dominated Solution*** and is marked here in red. 
 E.g, we see that **E** is not dominated by any other solution. Even though **F** dominates it in the horizontal objective, 
 it does not in the vertical one. The same but vice versa is in its relationship with solution **D**. 
 
@@ -51,12 +51,16 @@ To make sure you understand this, I suggest you scan all lettered solutions A-H,
 color coding according to this logic.
 
 Once this is understood we can define:  
-A Pareto Optimal solution is on that is Non Dominated.  
+A ***Pareto Optimal*** solution is one that is Non Dominated.  
 
-A Pareto Front is a set of Pareto Optimal solutions.  
+A ***Pareto Front*** is a set of Pareto Optimal solutions.  
 
 Pareto Optimal solutions are all considered equally optimal, i.e, no reason to prefer one over the other, 
 until a subjective weighting is applied which enables their ranking according to a domain expert.   
+
+With this definition in mind, you are challenged in this interactive demo to identify Pareto Fronts within scatter plots. 
+
+Good luck!
 """
 
 expander_pareto = st.beta_expander("What is a Pareto Front?")
@@ -222,6 +226,18 @@ wack_file = "https://www.connections.com/hs-fs/hubfs/WhackAMoleTech.jpg"
 st.image(wack_file) # , width=1000)
 
 
+vilfredo_file = "https://upload.wikimedia.org/wikipedia/commons/f/fd/Vilfredo_Pareto_1870s2.jpg"
+
+text = """
+> Vilfredo Federico Damaso Pareto born Wilfried Fritz Pareto (15 July 1848 – 19 August 1923) was an Italian civil engineer, sociologist, economist, political scientist, and philosopher. He made several important contributions to economics, particularly in the study of income distribution and in the analysis of individuals' choices. He was also responsible for popularising the use of the term "elite" in social analysis.
+[Wikipedia](https://en.wikipedia.org/wiki/Vilfredo_Pareto)
+"""
+
+
+expander = st.beta_expander("Who was Pareto?")
+expander.image(vilfredo_file, width=200)
+expander.write(text)
+
 text_intro = """
 Decision making for multiple objectives is a non-trivial task, especially when they are in conflict. For example, how can one best overcome the classic trade-off between quality and cost of production, when the monetary value of quality is not defined? 
 
@@ -234,22 +250,10 @@ Real world applications span from supply chain management, manufacturing, aircra
 
 paretofront_file = "https://upload.wikimedia.org/wikipedia/commons/2/27/Pareto_Efficient_Frontier_1024x1024.png"
 
-expander_intro = st.beta_expander("Improved Decision Making with Pareto Fronts")
+expander_intro = st.beta_expander("Improved Decisions with Pareto Fronts")
 expander_intro.image(paretofront_file, width=200)
 expander_intro.write(text_intro)
 
-
-vilfredo_file = "https://upload.wikimedia.org/wikipedia/commons/f/fd/Vilfredo_Pareto_1870s2.jpg"
-
-text = """
-> Vilfredo Federico Damaso Pareto born Wilfried Fritz Pareto (15 July 1848 – 19 August 1923) was an Italian civil engineer, sociologist, economist, political scientist, and philosopher. He made several important contributions to economics, particularly in the study of income distribution and in the analysis of individuals' choices. He was also responsible for popularising the use of the term "elite" in social analysis.
-[Wikipedia](https://en.wikipedia.org/wiki/Vilfredo_Pareto)
-"""
-
-
-expander = st.beta_expander("Who was Pareto?")
-expander.image(vilfredo_file, width=200)
-expander.write(text)
 
 text_more = """
 
@@ -285,6 +289,7 @@ expander_more.write(text_more)
 
 
 """
-Created by: [Eyal Kazin Ph.D](https://www.linkedin.com/in/eyal-kazin-0b96227a/)
+Created by: [Eyal Kazin Ph.D](https://www.linkedin.com/in/eyal-kazin-0b96227a/)  
+Learn more: [*"Improved Decisions with Pareto Fronts"*](http://bit.ly/improved-decisions-pareto)  
 """
 
