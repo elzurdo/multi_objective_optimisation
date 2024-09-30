@@ -63,7 +63,7 @@ With this definition in mind, you are challenged in this interactive demo to ide
 Good luck!
 """
 
-expander_pareto = st.beta_expander("What is a Pareto Front?")
+expander_pareto = st.expander("What is a Pareto Front?")
 expander_pareto.image(paretofront_file, width=400)
 expander_pareto.write(text_pareto)
 
@@ -80,7 +80,7 @@ text_instructions = """
 """
 
 
-expander_instructions = st.beta_expander("Instructions")
+expander_instructions = st.expander("Instructions")
 expander_instructions.write(text_instructions)
 
 
@@ -234,7 +234,7 @@ text = """
 """
 
 
-expander = st.beta_expander("Who was Pareto?")
+expander = st.expander("Who was Pareto?")
 expander.image(vilfredo_file, width=200)
 expander.write(text)
 
@@ -250,7 +250,7 @@ Real world applications span from supply chain management, manufacturing, aircra
 
 paretofront_file = "https://upload.wikimedia.org/wikipedia/commons/2/27/Pareto_Efficient_Frontier_1024x1024.png"
 
-expander_intro = st.beta_expander("Improved Decisions with Pareto Fronts")
+expander_intro = st.expander("Improved Decisions with Pareto Fronts")
 expander_intro.image(paretofront_file, width=200)
 expander_intro.write(text_intro)
 
@@ -284,7 +284,7 @@ This introduction is geared towards anyone who makes data driven decisions,
  You will learn the advantages and shortcomings of the technique and be able to assess applicability for your own projects.
 """
 
-expander_more = st.beta_expander("Where may I learn more?")
+expander_more = st.expander("Where may I learn more?")
 expander_more.write(text_more)
 
 
